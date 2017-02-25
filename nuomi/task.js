@@ -71,7 +71,7 @@ page.open(url, function(status) {
 			return resultobjtmp;
 		});
 	} catch (e) {
-		successResult.code = 1;
+		successResult.code = 0;
 		successResult.msg = '抓取失败' + e;
 	}
 
