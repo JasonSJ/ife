@@ -5,14 +5,14 @@ var page = require('webpage').create(),
 	keyword,
 	watchStart,
 	watchEnd;
-https: //www.baidu.com/s?wd=%E4%BA%94%E4%B8%89
-	if (sys.args.length <= 1) {
-		console.log('please enter a keyword for the search');
-		phantom.exit(1);
-	} else {
-		keyword = sys.args[1];
-		url = baseurl + encodeURI(keyword);
-	}
+
+if (sys.args.length <= 1) {
+	console.log('please enter a keyword for the search');
+	phantom.exit(1);
+} else {
+	keyword = sys.args[1];
+	url = baseurl + encodeURI(keyword);
+}
 
 phantom.outputEncoding = "utf-8"
 
