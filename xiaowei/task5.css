@@ -166,6 +166,7 @@ form input[type=submit] {
 }
 #main {
 	overflow: hidden;
+	min-width: 1027px;
 }
 
 #content,aside {
