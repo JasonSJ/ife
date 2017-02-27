@@ -1,0 +1,191 @@
+body, ul, ol, li, p, h1, h2, h3, form, table, td, img, div, input {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+body {
+	background-color: #e6e6e6;
+	color: #333;
+}
+header {
+	height: 60px;
+	background: url(./images/baidu_logo.png) no-repeat 50px 10px #333
+}
+header h1 {
+	display: none
+}
+header nav ul {
+	float: right;
+	font-size: 12px
+}
+header nav li {
+	list-style: none;
+	float: left;
+	height: 60px;
+	line-height: 60px;
+	width: 80px;
+	position: relative
+}
+header nav li:before {
+	content: '';
+	position: absolute;
+	top: 26px;
+	left: -15px;
+	width: 6px;
+	height: 6px;
+	border-radius: 3px;
+	background-color: #000
+}
+header nav ul li a {
+	color: #fff;
+	text-decoration: none
+}
+header nav ul li:last-child a {
+	color: #ccc
+}
+article, section, aside {
+	border: 1px solid #ddd;
+	background-color: #fff;
+	box-shadow: 2px 2px 2px #999;
+	margin: 20px;
+	padding: 30px 20px
+}
+h1 {
+	font-size: 24px
+}
+h2 {
+	font-size: 18px;
+	color: #666;
+	margin: 10px 0
+}
+article span, article span {
+	font-size: 13px;
+	color: #999
+}
+article p {
+	text-indent: 2em;
+	margin: 10px 0;
+	line-height: 35px
+}
+article ul {
+	list-style: none;
+	margin-left: 2em;
+	line-height: 1.5em
+}
+section {
+	overflow: hidden;
+}
+section ul {
+	list-style: none
+}
+section ul li {
+	float: left;
+}
+figure {
+	border: 1px solid #999;
+	display: inline-block;
+	padding: 15px;
+	text-align: center;
+	margin: 5px;
+}
+figure img {
+	margin-top: 15px
+}
+article ol {
+	margin-left: 50px
+}
+article table {
+	border: 0;
+	border-spacing: 0;
+	border-collapse: collapse;
+	width: 100%
+}
+article table thead {
+	background-color: #333;
+	color: #fff
+}
+article table td, article table th {
+	text-align: left;
+	padding: 2px 5px
+}
+article table tfoot {
+	background-color: #ddd;
+	font-weight: bold
+}
+article table tfoot td {
+	border: 0
+}
+aside h1 {
+	border-left: 3px solid #ddd;
+	padding: 5px 10px;
+	margin-bottom: 10px;
+}
+aside h2 {
+	display: none;
+}
+form {
+	margin: 0 auto;
+	font-size: 14px;
+}
+form div {
+	margin: 10px 0;
+}
+
+form label:first-child {
+	text-align: right;
+	width: 40%;
+	display: inline-block;
+	padding-right: 15px;
+}
+
+form p {
+	margin: 10px 40%;
+	padding-left: 15px;
+	color: #ccc;
+	font-size: 14px;
+	width: 100%;
+}
+
+input[placeholder]::-webkit-input-placeholder, textarea[placeholder]::-webkit-input-placeholder {
+	color: #333;
+}
+
+form textarea{
+	vertical-align: top;
+	width: 50%;
+	height: 7em;
+}
+
+form input[type=submit] {
+	width: 100%;
+	height: 40px;
+	background:#4455dd;
+	color: #fff;
+	font-size: 16px;
+	border-radius: 10px;
+}
+#main {
+	overflow: hidden;
+}
+
+#content,aside {
+	float: left;
+}
+
+#content {
+	margin-right: 517px;
+}
+
+aside {
+	margin-top: 20px; 
+	margin-left: -517px;
+}
+footer {
+	background-color: #000;
+	line-height: 60px;
+	height: 60px;
+	text-align: center;
+	color: #fff;
+	font-size: 12px
+}
+
