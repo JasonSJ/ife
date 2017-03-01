@@ -13,7 +13,12 @@
 		{
 			margin: 10px;
 		}
-
+		
+		button {
+			width: 100px;
+			height: 25px;
+		}
+		
 		#btn-push,#btn-pop{
 			margin-left: 10px;
 		}
@@ -105,6 +110,7 @@
 				alert(numout);					
 			}
 
+			// 列表点击事件绑定
 			queueDisplay.onclick = function (event) {
 				var e = event || window.event;
 				e.stopPropagation();				
@@ -115,6 +121,8 @@
 				}
 
 			}
+
+			// 渲染列表
 			function render(){
 				queueDisplay.innerHTML = '';
 
@@ -134,10 +142,12 @@
 				queueDisplay.appendChild(domFrag);
 			}
 
+			// 清除输入框
 			function clearInput() {
 				queueInput.value = '';
 			}
 
+			// 检测输入合法性
 			function checkint(value) {
 				if (value.length === 0 ) {
 					return false;
