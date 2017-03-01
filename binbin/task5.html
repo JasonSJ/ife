@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>任务五：基础JavaScript练习（二）</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.oparea
+		{
+			margin: 10px;
+		}
+		
+		button {
+			width: 100px;
+			height: 25px;
+		}
+		#btn-push,#btn-pop{
+			margin-left: 10px;
+		}
+
+		#btn-shift{
+			margin-left: 20px;
+		}
+
+		#queue-display {
+			list-style: none;
+			overflow: auto;
+		}
+
+		#queue-display li {
+			display: inline-block;
+			background: #FC0100;
+			margin-left: 10px;
+			padding: 10px;
+			color: #fff;
+			font-size: 18px;
+			vertical-align: bottom;
+		}
+	</style>
+</head>
+<body>
+	<div class="oparea">
+		<input type="text" name="queue-input" id="queue-input"> 
+		<button id="btn-unshift">左侧入</button><button id="btn-push">右侧入</button>
+		<button id="btn-shift">左侧出</button><button id="btn-pop">右侧出</button>	
+	</div>
+
+	<div class="oparea">
+		<button id="btn-sort">可视化排序</button>
+	</div>
+	
+	<ul id="queue-display">
+	</ul>
+	<script type="text/javascript">
+		// (function () {
+			var queue = [];
+			window.queue =queue;
+			var $ = function (id) {
+				return document.querySelector('#'+id);
+			};
+			var queueInput = $('queue-input');
+			var queueDisplay = $('queue-display');
+
+
+			//左侧入
+			$("btn-unshift").onclick = function(){
+				var numin = queueInput.value;
+				clearInput();
+
+				if (!checkinput(numin)) {
+					return;
+				} 
+
+				queue.unshift(numin);
+
+				render(queue);
+			};
+
+			//右侧入
+			$("btn-push").onclick = function(){
+				var numin = queueInput.value;
+				clearInput();
+
+				if (!checkinput(numin)) {
+					return;
+				} 
+
+				queue.push(numin);
+
+				render(queue);			
+			}
+
+			//左侧出
+			$("btn-shift").onclick = function(){
+				if (queue.length === 0) {
+					return;
+				}
+				var numout = queue.shift();
+				render(queue);
+				alert(numout);
+			}
+
+			//右侧出
+			$("btn-pop").onclick = function(){
+				if (queue.length === 0) {
+					return;
+				}
+				var numout = queue.pop();
+				render(queue);	
+				alert(numout);					
+			}
+
+			// 列表点击事件绑定
+			queueDisplay.onclick = function (event) {
+				var e = event || window.event;
+				e.stopPropagation();				
+				var ele = e.srcElement || e.target;
+				if (ele.tagName.toUpperCase() === "LI") {
+					queue.splice(ele.getAttribute('data-index'),1);
+					render(queue);
+				}
+
+			}
+
+			// 排序按钮事件绑定
+			$('btn-sort').onclick = visualSort;
+
+			function visualSort() {
+				if (queue.length < 1) {
+					return;
+				}
+				var i,
+					j,
+					exchange,
+					visualArr = [];
+
+				queue = queue.map(function(item){
+					return parseInt(item,10);
+				});
+
+				for (i = 0; i < queue.length - 1; i++) {
+					for (j = i+1; j < queue.length; j++) {
+						if (queue[i] > queue[j]) {
+							exchange = queue[i];
+							queue[i] = queue[j];
+							queue[j] = exchange;
+							visualArr.push(queue.concat([]));
+						}
+					}
+				}
+
+				var timer = setInterval(function(){
+					render(visualArr.shift());
+					if (visualArr.length === 0) {
+						clearInterval(timer);
+					}
+				},500);
+
+			}
+
+			// 渲染列表
+			function render(data){
+				queueDisplay.innerHTML = '';
+
+				if (data.length === 0) {
+					return;
+				}
+
+				var domFrag = document.createDocumentFragment();
+
+				data
+				.map(function(item){
+					return parseInt(item,10);
+				})
+				.forEach(function (item,index) {
+					var ele = document.createElement('li');
+					ele.setAttribute('data-index',index);
+					ele.style.height = item * 2 +'px';
+					domFrag.appendChild(ele);
+				})
+
+				queueDisplay.appendChild(domFrag);
+			}
+
+			// 清除输入框
+			function clearInput() {
+				queueInput.value = '';
+			}
+
+			// 检测输入合法性
+			function checkinput(value) {
+				if (value.length === 0 ) {
+					return false;
+				}
+
+				if (queue.length >= 60) {
+					alert('队列元素数量最多限制为60个');
+					return false;
+				}
+
+				var regex = /^(([1-9]\d)|100)$/;
+
+				if (regex.test(value)) {
+					return true;
+				} else {
+					alert('请输入10-100的数字');
+					return false;
+				}
+			}
+		// })();
+		
+	</script>
+</body>
+</html>
