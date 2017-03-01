@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>任务六：基础JavaScript练习（三）</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.oparea
+		{
+			margin: 10px;
+		}
+		
+		button {
+			width: 100px;
+			height: 25px;
+		}
+
+		#btn-push,#btn-pop,#search-button{
+			margin-left: 10px;
+		}
+
+		#btn-shift{
+			margin-left: 20px;
+		}
+
+		#queue-display {
+			list-style: none;
+			overflow: auto;
+		}
+
+		#queue-display li {
+
+			float: left;
+			background: #FC0100;
+			margin-left: 10px;
+			padding: 10px;
+			color: #fff;
+			font-size: 18px;
+		}
+
+		#queue-display li.highlight {
+			background-color: yellow;
+			color: #000;
+		}
+	</style>
+</head>
+<body>
+	<div class="oparea">
+		<textarea name="queue-input" id="queue-input" id="" cols="30" rows="10"></textarea>
+		<button id="btn-unshift">左侧入</button><button id="btn-push">右侧入</button>
+		<button id="btn-shift">左侧出</button><button id="btn-pop">右侧出</button>	
+	</div>
+	<div class="oparea">
+		<input type="text" id="search-input"><button id="search-button">查询</button>
+	</div>
+	<ul id="queue-display">
+	</ul>
+	<script type="text/javascript">
+		(function () {
+			var queue = [];
+			var $ = function (id) {
+				return document.querySelector('#'+id);
+			};
+			var queueInput = $('queue-input');
+			var queueDisplay = $('queue-display');
+			var searchInput = $('search-input');
+
+
+			//左侧入
+			$("btn-unshift").onclick = function(){
+				var valueIn = queueInput.value;
+				clearInput();
+
+				if (!checkInput(valueIn)) {
+					return;
+				} 
+
+				var valueInArr = getInput(valueIn);
+
+				valueInArr.forEach(function (item) {
+					queue.unshift(item);
+				})
+
+				render();
+			};
+
+			//右侧入
+			$("btn-push").onclick = function(){
+				var valueIn = queueInput.value;
+				clearInput();
+
+				if (!checkInput(valueIn)) {
+					return;
+				}
+
+				var value = getInput(valueIn);
+
+				var valueInArr = getInput(valueIn);
+
+				valueInArr.forEach(function (item) {
+					queue.push(item);
+				})
+
+				render();			
+			}
+
+			//左侧出
+			$("btn-shift").onclick = function(){
+				if (queue.length === 0) {
+					return;
+				}
+				var valueout = queue.shift();
+				render();
+				alert(valueout);
+			}
+
+			//右侧出
+			$("btn-pop").onclick = function(){
+				if (queue.length === 0) {
+					return;
+				}
+				var valueout = queue.pop();
+				render();	
+				alert(valueout);					
+			}
+
+			// 列表点击事件绑定
+			queueDisplay.onclick = function (event) {
+				var e = event || window.event;
+				e.stopPropagation();				
+				var ele = e.srcElement || e.target;
+				if (ele.tagName.toUpperCase() === "LI") {
+					queue.splice(ele.getAttribute('data-index'),1);
+					render();
+				}
+
+			}
+
+			// 查询按钮事件绑定
+			$('search-button').onclick = function (eve) {
+				var valueSearch = searchInput.value;
+				clearSearch();
+				if(!checkInput(valueSearch)){
+					return;
+				}
+
+				search(valueSearch);
+			}
+			// 渲染列表
+			function render(){
+				queueDisplay.innerHTML = '';
+
+				if (queue.length === 0) {
+					return;
+				}
+
+				var domFrag = document.createDocumentFragment();
+
+				queue.forEach(function (item,index) {
+					var ele = document.createElement('li');
+					ele.textContent = item;
+					ele.setAttribute('data-index',index);
+					domFrag.appendChild(ele);
+				})
+
+				queueDisplay.appendChild(domFrag);
+			}
+
+			// 搜索
+			function search(value) {
+				if (queue.length === 0) {
+					return;
+				}
+
+				queueDisplay.innerHTML = '';
+
+				var domFrag = document.createDocumentFragment();
+
+				queue.forEach(function (item,index) {
+					var ele = document.createElement('li');
+					ele.textContent = item;
+					ele.setAttribute('data-index',index);
+
+					if (item.indexOf(value)>-1) {
+						ele.className = 'highlight';
+					}
+
+					domFrag.appendChild(ele);
+				})
+
+				queueDisplay.appendChild(domFrag);
+			}
+
+			// 清除输入框
+			function clearInput() {
+				queueInput.value = '';
+			}
+
+			// 清除搜索框
+			function clearSearch() {
+				searchInput.value = '';
+			}
+
+			// 检测输入合法性
+			function checkInput(value) {
+				if (value.length === 0 ) {
+					return false;
+				}
+
+				return true;
+			}
+
+			// 获取输入参数
+			function getInput(value) {
+				var item = '',
+					regex = /\s|\u3000|,|，|、|\.|。/ig,
+					valueArr = [];
+				
+				for (var i = 0; i < value.length; i++) {
+					if (regex.test(value[i])) {
+						if (item !== '') {
+							valueArr.push(item);
+							item = '';
+						}
+					} else {
+						item += value[i];
+					}
+				}
+
+				if (item!=='') {
+					valueArr.push(item);
+				}
+
+				return valueArr;
+			}
+		})();
+		
+	</script>
+</body>
+</html>
