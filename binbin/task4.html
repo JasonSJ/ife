@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>任务四：基础JavaScript练习（一）</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.oparea
+		{
+			margin: 10px;
+		}
+
+		#btn-push,#btn-pop{
+			margin-left: 10px;
+		}
+
+		#btn-shift{
+			margin-left: 20px;
+		}
+
+		#queue-display {
+			list-style: none;
+			overflow: auto;
+		}
+
+		#queue-display li {
+
+			float: left;
+			background: #FC0100;
+			margin-left: 10px;
+			padding: 10px;
+			color: #fff;
+			font-size: 18px;
+		}
+	</style>
+</head>
+<body>
+	<div class="oparea">
+		<label for="queue-input">请输入一个数字:</label><input type="text" name="queue-input" id="queue-input"> 
+		<button id="btn-unshift">左侧入</button><button id="btn-push">右侧入</button>
+		<button id="btn-shift">左侧出</button><button id="btn-pop">右侧出</button>	
+	</div>
+	
+	<ul id="queue-display">
+	</ul>
+	<script type="text/javascript">
+		(function () {
+			var queue = [];
+			var $ = function (id) {
+				return document.querySelector('#'+id);
+			};
+			var queueInput = $('queue-input');
+			var queueDisplay = $('queue-display');
+
+
+			//左侧入
+			$("btn-unshift").onclick = function(){
+				var numin = queueInput.value;
+				clearInput();
+
+				if (!checkint(numin)) {
+					return;
+				} 
+
+				queue.unshift(numin);
+
+				render();
+			};
+
+			//右侧入
+			$("btn-push").onclick = function(){
+				var numin = queueInput.value;
+				clearInput();
+
+				if (!checkint(numin)) {
+					return;
+				} 
+
+				queue.push(numin);
+
+				render();			
+			}
+
+			//左侧出
+			$("btn-shift").onclick = function(){
+				if (queue.length === 0) {
+					return;
+				}
+				var numout = queue.shift();
+				render();
+				alert(numout);
+			}
+
+			//右侧出
+			$("btn-pop").onclick = function(){
+				if (queue.length === 0) {
+					return;
+				}
+				var numout = queue.pop();
+				render();	
+				alert(numout);					
+			}
+
+			queueDisplay.onclick = function (event) {
+				var e = event || window.event;
+				e.stopPropagation();				
+				var ele = e.srcElement || e.target;
+				if (ele.tagName.toUpperCase() === "LI") {
+					queue.splice(ele.getAttribute('data-index'),1);
+					render();
+				}
+
+			}
+			function render(){
+				queueDisplay.innerHTML = '';
+
+				if (queue.length === 0) {
+					return;
+				}
+
+				var domFrag = document.createDocumentFragment();
+
+				queue.forEach(function (item,index) {
+					var ele = document.createElement('li');
+					ele.textContent = item;
+					ele.setAttribute('data-index',index);
+					domFrag.appendChild(ele);
+				})
+
+				queueDisplay.appendChild(domFrag);
+			}
+
+			function clearInput() {
+				queueInput.value = '';
+			}
+
+			function checkint(value) {
+				if (value.length === 0 ) {
+					return false;
+				}
+
+				var regex = /^(\-?[1-9]+\d*)|0$/;
+
+				if (regex.test(value)) {
+					return true;
+				} else {
+					alert('请输入一个数字');
+					return false;
+				}
+			}
+		})();
+		
+	</script>
+</body>
+</html>
