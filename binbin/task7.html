@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>任务七：JavaScript和树（一）</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.mg10
+		{
+			margin: 10px;
+		}
+		
+		button {
+			width: 100px;
+			height: 25px;
+			margin-left: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="mg10">
+		
+	</div>
+	<div class="mg10">
+		<button id="preorder-traverse-button">先序遍历</button>
+		<button id="binaryorder-traverse-button">中序遍历</button>
+		<button id="postorder-traverse-button">后续遍历</button>
+	</div>
+	<script type="text/javascript">
+		// (function () {
+			var $ = function (id) {
+				return document.querySelector('#'+id);
+			};
+
+			
+
+			// 节点id生成器
+			var generateNodeId = (function(){
+				var id = 0;
+
+				function getNodeId() {
+					return 'node' + (++id);
+				}
+
+				return getNodeId;
+			})();
+
+			// 二叉树
+			var rootNode = {
+				data: generateNodeId(),
+				left: {
+					data: generateNodeId(),
+					left: {
+						data: generateNodeId(),
+						left: {
+							data: generateNodeId()
+						},
+						right: {
+							data: generateNodeId()
+						}
+					},
+					right: {
+						data: generateNodeId(),
+						left: {
+							data: generateNodeId()
+						},
+						right: {
+							data: generateNodeId()
+						}
+					}
+				},
+				right: {
+					data: generateNodeId(),
+					left: {
+						data: generateNodeId(),
+						left: {
+							data: generateNodeId()
+						},
+						right: {
+							data: generateNodeId()
+						}
+					},
+					right: {
+						data: generateNodeId(),
+						left: {
+							data: generateNodeId()
+						},
+						right: {
+							data: generateNodeId()
+						}
+					}
+				}
+			}
+
+			renderTree();
+
+			// 先序遍历按钮事件绑定
+			$('preorder-traverse-button').onclick = preorderHandler;
+
+			// 中序遍历按钮事件绑定
+			$('binaryorder-traverse-button').onclick = binaryorderHandler;
+
+			// 后序遍历按钮事件绑定
+			$('postorder-traverse-button').onclick = postorderHandler;
+
+			function renderTree(){
+
+			}
+
+			// 先序遍历事件回调
+			function preorderHandler() {
+				var animateDataArr = [];
+				preorder(rootNode ,animateDataArr);
+				console.log('开始先序遍历动画');
+				console.log(animateDataArr);
+			}
+
+			// 中序遍历事件回调
+			function binaryorderHandler() {
+				var animateDataArr = [];
+				binaryorder(rootNode ,animateDataArr);
+				console.log('开始中序遍历动画');
+				console.log(animateDataArr);
+
+
+			}
+
+			// 后序遍历事件回调
+			function postorderHandler() {
+				var animateDataArr = [];
+				postorder(rootNode ,animateDataArr);
+				console.log('开始后序遍历动画');
+				console.log(animateDataArr);
+
+			}
+
+			// 递归先序遍历
+			function preorder(node ,animateDataArr){
+				if(node != null) {
+					animateDataArr.push(node.data);
+					node.left && preorder(node.left ,animateDataArr);
+					node.right && preorder(node.right ,animateDataArr);
+				}
+			}
+
+			// 递归中序遍历
+			function binaryorder(node ,animateDataArr){
+				if (node != null ) {
+					node.left && binaryorder(node.left ,animateDataArr);
+					animateDataArr.push(node.data);
+					node.right && binaryorder(node.right ,animateDataArr);
+				}
+
+			}
+
+			// 递归后续遍历
+			function postorder(node ,animateDataArr) {
+				if (node != null) {
+					node.left && postorder(node.left ,animateDataArr);
+					node.right && postorder(node.right ,animateDataArr);
+					animateDataArr.push(node.data);
+				}
+			}
+		// })();
+		
+	</script>
+</body>
+</html>
