@@ -7,14 +7,35 @@
 		* {
 			margin: 0;
 			padding: 0;
+			box-sizing: border-box;
 		}
 
-		.mg10
-		{
-			margin: 10px;
+		.tree-wrapper {
+			width: 1000px;
+			margin: 0 auto;
+			display: flex;
+			justify-content: center;
 		}
-		
-		button {
+
+		.tree-wrapper div.active {
+			background: blue;
+		}
+
+		.tree-wrapper div {
+			display: flex;
+			padding: 15px 30px;
+			margin: 5px;
+			border: 1px solid #000;	
+			background: #fff;		
+		}
+
+		.button-wrapper {
+			display: flex;
+			margin: 50px auto;
+			justify-content: center;
+		}
+
+		.button-wrapper button {
 			width: 100px;
 			height: 25px;
 			margin-left: 10px;
@@ -22,16 +43,15 @@
 	</style>
 </head>
 <body>
-	<div class="mg10">
-		
+	<div class="tree-wrapper" id="treeContainer">
 	</div>
-	<div class="mg10">
+	<div class="button-wrapper">
 		<button id="preorder-traverse-button">先序遍历</button>
 		<button id="binaryorder-traverse-button">中序遍历</button>
 		<button id="postorder-traverse-button">后续遍历</button>
 	</div>
 	<script type="text/javascript">
-		// (function () {
+		(function () {
 			var $ = function (id) {
 				return document.querySelector('#'+id);
 			};
@@ -96,7 +116,9 @@
 				}
 			}
 
-			renderTree();
+			var timer = null;
+
+			renderTree(rootNode,'treeContainer');
 
 			// 先序遍历按钮事件绑定
 			$('preorder-traverse-button').onclick = preorderHandler;
@@ -107,8 +129,42 @@
 			// 后序遍历按钮事件绑定
 			$('postorder-traverse-button').onclick = postorderHandler;
 
-			function renderTree(){
+			// 先序遍历画一颗二叉树
+			function renderTree(node,id){
+				if (rootNode == null) {
+					return;
+				}
 
+				var nodeDom = document.createElement('div');
+				nodeDom.setAttribute('id',node.data);
+				$(id).appendChild(nodeDom);
+
+				node.left && renderTree(node.left ,node.data);
+				node.right && renderTree(node.right ,node.data);
+			}
+
+			
+			function visualTraverse(animateDataArr) {
+				if (timer) {
+					clearInterval(timer);
+					timer = null;
+					var activeNodeDom = document.querySelector('.active');
+					if (activeNodeDom) {
+						activeNodeDom.className = '';
+					}
+				}
+				timer = setInterval(function(){
+					var nodeid = animateDataArr.shift();
+					var activeNodeDom = document.querySelector('.active');
+					if (activeNodeDom) {
+						activeNodeDom.className = '';
+					}
+					$(nodeid).className = 'active';
+
+					if (animateDataArr.length === 0) {
+						clearInterval(timer);
+					}
+				},500)
 			}
 
 			// 先序遍历事件回调
@@ -117,6 +173,7 @@
 				preorder(rootNode ,animateDataArr);
 				console.log('开始先序遍历动画');
 				console.log(animateDataArr);
+				visualTraverse(animateDataArr);
 			}
 
 			// 中序遍历事件回调
@@ -125,8 +182,7 @@
 				binaryorder(rootNode ,animateDataArr);
 				console.log('开始中序遍历动画');
 				console.log(animateDataArr);
-
-
+				visualTraverse(animateDataArr);
 			}
 
 			// 后序遍历事件回调
@@ -135,37 +191,42 @@
 				postorder(rootNode ,animateDataArr);
 				console.log('开始后序遍历动画');
 				console.log(animateDataArr);
-
+				visualTraverse(animateDataArr);
 			}
 
 			// 递归先序遍历
 			function preorder(node ,animateDataArr){
-				if(node != null) {
-					animateDataArr.push(node.data);
-					node.left && preorder(node.left ,animateDataArr);
-					node.right && preorder(node.right ,animateDataArr);
+				if(node == null) {
+					return;
 				}
+
+				animateDataArr.push(node.data);
+				node.left && preorder(node.left ,animateDataArr);
+				node.right && preorder(node.right ,animateDataArr);
 			}
 
 			// 递归中序遍历
 			function binaryorder(node ,animateDataArr){
-				if (node != null ) {
-					node.left && binaryorder(node.left ,animateDataArr);
-					animateDataArr.push(node.data);
-					node.right && binaryorder(node.right ,animateDataArr);
+				if (node == null ) {
+					return
 				}
 
+				node.left && binaryorder(node.left ,animateDataArr);
+				animateDataArr.push(node.data);
+				node.right && binaryorder(node.right ,animateDataArr);
 			}
 
 			// 递归后续遍历
 			function postorder(node ,animateDataArr) {
-				if (node != null) {
-					node.left && postorder(node.left ,animateDataArr);
-					node.right && postorder(node.right ,animateDataArr);
-					animateDataArr.push(node.data);
+				if (node == null) {
+					return;
 				}
+
+				node.left && postorder(node.left ,animateDataArr);
+				node.right && postorder(node.right ,animateDataArr);
+				animateDataArr.push(node.data);
 			}
-		// })();
+		})();
 		
 	</script>
 </body>
