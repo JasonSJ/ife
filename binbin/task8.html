@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>任务七：JavaScript和树（一）</title>
+	<title>任务八：JavaScript和树（二）</title>
 	<style type="text/css">
 		* {
 			margin: 0;
@@ -23,10 +24,11 @@
 
 		.tree-wrapper div {
 			display: flex;
-			padding: 15px 30px;
+			padding: 0 20px 30px 0;
 			margin: 5px;
 			border: 1px solid #000;	
 			background: #fff;		
+			margin-top: 20px;			
 		}
 
 		.button-wrapper {
@@ -40,24 +42,35 @@
 			height: 25px;
 			margin-left: 10px;
 		}
+
+		#query-tip {
+			color: red;
+			display: none;
+		}
 	</style>
 </head>
 <body>
 	<div class="tree-wrapper" id="treeContainer">
 	</div>
 	<div class="button-wrapper">
-		<button id="preorder-traverse-button">先序遍历</button>
-		<button id="binaryorder-traverse-button">中序遍历</button>
-		<button id="postorder-traverse-button">后续遍历</button>
+		<button id="dfs-traverse-button">DFS</button>
+		<button id="bfs-traverse-button">BFS</button>
 	</div>
+	<div class="button-wrapper">
+		<input type="text" name="query-input" id="query-input">
+		<button id="query-button">查询</button>
+	</div>
+
+	<div class="button-wrapper">
+		<div id="query-tip">找不到该节点</div>		
+	</div>
+
 	<script type="text/javascript">
 		(function () {
 			var $ = function (id) {
 				return document.querySelector('#'+id);
 			};
-
 			
-
 			// 节点id生成器
 			var generateNodeId = (function(){
 				var id = 0;
@@ -69,82 +82,102 @@
 				return getNodeId;
 			})();
 
-			// 二叉树
+			// 多叉树
 			var rootNode = {
 				data: generateNodeId(),
-				left: {
+				children: [{
 					data: generateNodeId(),
-					left: {
+					children: [{
 						data: generateNodeId(),
-						left: {
+						children: [{
 							data: generateNodeId()
-						},
-						right: {
+						}, {
 							data: generateNodeId()
-						}
-					},
-					right: {
+						}, {
+							data: generateNodeId()
+						}, {
+							data: generateNodeId()
+						}]
+					}, {
 						data: generateNodeId(),
-						left: {
+						children: [{
 							data: generateNodeId()
-						},
-						right: {
+						}, {
 							data: generateNodeId()
-						}
-					}
-				},
-				right: {
+						}, {
+							data: generateNodeId()
+						}]
+					}]
+				}, {
 					data: generateNodeId(),
-					left: {
+					children: [{
 						data: generateNodeId(),
-						left: {
+						children: [{
 							data: generateNodeId()
-						},
-						right: {
+						}, {
 							data: generateNodeId()
-						}
-					},
-					right: {
-						data: generateNodeId(),
-						left: {
+						}, {
 							data: generateNodeId()
-						},
-						right: {
-							data: generateNodeId()
-						}
-					}
-				}
-			}
+						}]
+					}]
+				}]
+			};
 
 			var timer = null;
 
-			renderTree(rootNode,'treeContainer');
+			renderTree(rootNode,$('treeContainer'));
 
-			// 先序遍历按钮事件绑定
-			$('preorder-traverse-button').onclick = preorderHandler;
+			// dfs按钮事件绑定
+			$('dfs-traverse-button').onclick = dfsHandler;
 
-			// 中序遍历按钮事件绑定
-			$('binaryorder-traverse-button').onclick = binaryorderHandler;
+			// bfs按钮事件绑定
+			$('bfs-traverse-button').onclick = bfsHandler;
 
-			// 后序遍历按钮事件绑定
-			$('postorder-traverse-button').onclick = postorderHandler;
+			// 查询按钮事件绑定
 
-			// 先序遍历画一颗二叉树
-			function renderTree(node,id){
-				if (rootNode == null) {
+			$('query-button').onclick = function(){
+				var queryVal = $('query-input').value,
+					animateDataArr = [];
+				if (queryVal == '') {
+					return;
+				}			
+				var tipDom =$('query-tip');
+				tipDom.style.display = 'none';
+				bfsQuery(rootNode, queryVal,animateDataArr);
+
+				var hasQuerySuccess = true;
+				if (queryVal != animateDataArr[animateDataArr.length-1]) {
+					hasQuerySuccess = false;
+				}
+
+				visualTraverse(animateDataArr,function(){
+					if (!hasQuerySuccess) {
+						tipDom.style.display = 'block';
+					}
+				});			
+			};
+
+			// dfs画一颗二叉树
+			function renderTree(currentNode,targetNode){
+				if (currentNode == null) {
 					return;
 				}
 
 				var nodeDom = document.createElement('div');
-				nodeDom.setAttribute('id',node.data);
-				$(id).appendChild(nodeDom);
+				nodeDom.setAttribute('id',currentNode.data);
+				nodeDom.textContent = currentNode.data;
 
-				node.left && renderTree(node.left ,node.data);
-				node.right && renderTree(node.right ,node.data);
+				if (Array.isArray(currentNode.children) && currentNode.children.length >0) {
+					currentNode.children.forEach(function (item,index) {
+						renderTree(item,nodeDom);
+					})
+				}
+
+				targetNode.appendChild(nodeDom);				
 			}
 
-			
-			function visualTraverse(animateDataArr) {
+			// 可视化回放
+			function visualTraverse(animateDataArr,callback) {
 				if (timer) {
 					clearInterval(timer);
 					timer = null;
@@ -162,72 +195,91 @@
 					$(nodeid).className = 'active';
 
 					if (animateDataArr.length === 0) {
+						if (typeof callback == 'function') {
+							callback();
+						}
 						clearInterval(timer);
 					}
 				},500)
 			}
 
-			// 先序遍历事件回调
-			function preorderHandler() {
+			// dfs事件回调
+			function dfsHandler() {
 				var animateDataArr = [];
-				preorder(rootNode ,animateDataArr);
-				console.log('开始先序遍历动画');
+				dfs(rootNode ,animateDataArr);
+				console.log('开始dfs动画');
 				console.log(animateDataArr);
 				visualTraverse(animateDataArr);
 			}
 
-			// 中序遍历事件回调
-			function binaryorderHandler() {
+			// bfs事件回调
+			function bfsHandler() {
 				var animateDataArr = [];
-				binaryorder(rootNode ,animateDataArr);
-				console.log('开始中序遍历动画');
+				bfs(rootNode ,animateDataArr);
+				console.log('开始bfs动画');
 				console.log(animateDataArr);
 				visualTraverse(animateDataArr);
 			}
 
-			// 后序遍历事件回调
-			function postorderHandler() {
-				var animateDataArr = [];
-				postorder(rootNode ,animateDataArr);
-				console.log('开始后序遍历动画');
-				console.log(animateDataArr);
-				visualTraverse(animateDataArr);
-			}
-
-			// 递归先序遍历
-			function preorder(node ,animateDataArr){
-				if(node == null) {
+			// dfs遍历
+			function dfs(currentNode ,animateDataArr){
+				if(currentNode == null) {
 					return;
 				}
 
-				animateDataArr.push(node.data);
-				node.left && preorder(node.left ,animateDataArr);
-				node.right && preorder(node.right ,animateDataArr);
+				if (Array.isArray(currentNode.children) && currentNode.children.length >0) {
+					currentNode.children.forEach(function (item,index) {
+						dfs(item,animateDataArr);
+					});
+				}
+
+				animateDataArr.push(currentNode.data);
 			}
 
-			// 递归中序遍历
-			function binaryorder(node ,animateDataArr){
+			// bfs遍历
+			function bfs(node ,animateDataArr){
 				if (node == null ) {
-					return
-				}
-
-				node.left && binaryorder(node.left ,animateDataArr);
-				animateDataArr.push(node.data);
-				node.right && binaryorder(node.right ,animateDataArr);
-			}
-
-			// 递归后续遍历
-			function postorder(node ,animateDataArr) {
-				if (node == null) {
 					return;
 				}
 
-				node.left && postorder(node.left ,animateDataArr);
-				node.right && postorder(node.right ,animateDataArr);
-				animateDataArr.push(node.data);
+				var queue = [];
+				queue.push(node);
+
+				while(queue.length > 0) {
+					var currentNode = queue.shift();
+					//访问当前节点
+					animateDataArr.push(currentNode.data);
+					if (Array.isArray(currentNode.children) && currentNode.children.length >0) {
+						queue = queue.concat(currentNode.children);
+					}
+				}
+			}				
+
+			// bfs查询
+			function bfsQuery(rootNode,queryVal,animateDataArr) {
+				if (rootNode == null) {
+					return;
+				}
+
+				var queue = [];
+				queue.push(rootNode);
+
+				while(queue.length > 0) {
+					var currentNode = queue.shift();
+					//访问当前节点
+					animateDataArr.push(currentNode.data);
+					//查询结束
+					if (queryVal == currentNode.data) {
+						break;
+					}
+					if (Array.isArray(currentNode.children) && currentNode.children.length >0) {
+						queue = queue.concat(currentNode.children);
+					}
+				}
 			}
 		})();
 		
 	</script>
 </body>
 </html>
+
