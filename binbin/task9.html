@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>任务九：JavaScript和树（三）</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.tree-wrapper {
+			width: 1000px;
+			margin: 0 auto;
+			display: flex;
+			justify-content: center;
+		}
+
+		.tree-wrapper div.active {
+			background: blue;
+		}
+
+		.tree-wrapper div {
+			display: flex;
+			padding: 0 20px 30px 0;
+			margin: 5px;
+			border: 1px solid #000;	
+			background: #fff;	
+			margin-top: 20px;	
+		}
+
+		.button-wrapper {
+			display: flex;
+			margin: 50px auto;
+			justify-content: center;
+		}
+
+		.button-wrapper button {
+			width: 100px;
+			height: 25px;
+			margin-left: 10px;
+		}
+
+		#query-tip {
+			color: red;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="tree-wrapper" id="treeContainer">
+	</div>
+	<div class="button-wrapper">
+		<input type="text" name="add-input" id="add-input">
+		<button id="add-button">增加节点</button>
+		<button id="delete-button">删除节点</button>
+
+	</div>
+
+	<script type="text/javascript">
+		(function () {
+			var $ = function (id) {
+				return document.querySelector('#'+id);
+			};
+			
+			// 节点id生成器
+			var generateNodeId = (function(){
+				var id = 0;
+
+				function getNodeId() {
+					return 'node' + (++id);
+				}
+
+				return getNodeId;
+			})();
+
+			// 多叉树
+			var rootNode = {
+				data: generateNodeId(),
+				children: [{
+					data: generateNodeId(),
+					children: [{
+						data: generateNodeId(),
+						children: [{
+							data: generateNodeId()
+						}, {
+							data: generateNodeId()
+						}, {
+							data: generateNodeId()
+						}, {
+							data: generateNodeId()
+						}]
+					}, {
+						data: generateNodeId(),
+						children: [{
+							data: generateNodeId()
+						}, {
+							data: generateNodeId()
+						}, {
+							data: generateNodeId()
+						}]
+					}]
+				}, {
+					data: generateNodeId(),
+					children: [{
+						data: generateNodeId(),
+						children: [{
+							data: generateNodeId()
+						}, {
+							data: generateNodeId()
+						}, {
+							data: generateNodeId()
+						}]
+					}]
+				}]
+			};
+
+			var timer = null;
+
+			renderTree(rootNode,$('treeContainer'));			
+
+			// 查询按钮时间绑定
+			$('add-button').onclick = function(){
+				var targetDom = document.querySelector('.active'),
+					addVal = $('add-input').value;
+				if (!targetDom || addVal == '') {
+					return;					
+				}
+
+				var newNodeDom = document.createElement('div');
+				newNodeDom.textContent = addVal;
+
+				newNodeDom.onclick = function(e){
+					e.stopPropagation();
+					var activeDom = document.querySelector('.active')
+					if (activeDom) {
+						activeDom.className = '';
+					}
+					newNodeDom.className = 'active';
+				};
+
+				targetDom.appendChild(newNodeDom);
+			};
+
+			// 删除按钮时间绑定
+			$('delete-button').onclick = function(){
+				var activeDom = document.querySelector('.active')
+				if (!activeDom) {
+					return;					
+				}
+				activeDom.remove();
+			};
+
+			// dfs画一颗二叉树
+			function renderTree(currentNode,targetNode){
+				if (currentNode == null) {
+					return;
+				}
+
+				var nodeDom = document.createElement('div');
+				nodeDom.textContent = currentNode.data;
+				nodeDom.onclick = function(e){
+					e.stopPropagation();
+					var activeDom = document.querySelector('.active')
+					if (activeDom) {
+						activeDom.className = '';
+					}
+					nodeDom.className = 'active';
+				}
+				if (Array.isArray(currentNode.children) && currentNode.children.length >0) {
+					currentNode.children.forEach(function (item,index) {
+						renderTree(item,nodeDom);
+					})
+				}
+
+				targetNode.appendChild(nodeDom);				
+			}		
+		})();
+		
+	</script>
+</body>
+</html>
