@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>任务一：表单（一）单个表单项的检验</title>
+	<style>
+		* {
+			padding:0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+		
+		form {
+			width: 800px;
+			margin: 100px auto;
+		}
+		
+		form .form-line {
+			text-align: center;
+		}
+
+		label, input {
+			height: 40px;
+			line-height: 40px;
+		}
+		
+		label, input[type=text] {
+			font-size: 20px;
+		}
+
+		input[type=text] {
+			border-radius: 5px;
+			margin-left: 25px; 
+			padding: 0 15px;
+		}
+
+		input[type=submit] {
+			margin-left: 10px;
+			width: 80px;
+			color: #fff;
+			background: #2E77B8;
+			font-size: 20px;
+			border: 0;
+			border-radius: 5px;
+		}
+		
+		.input-tip {
+			border: 2px solid #ccc;			
+		}
+
+		.input-invalid {
+			border: 2px solid #DE000D;
+		}
+
+		.input-valid {
+			border: 2px solid #60BD4E;
+		}
+		
+		p {
+			font-size: 18px;
+		}
+
+		.message-tip {
+			color: #ccc;
+		}
+
+		.message-invalid {
+			color: #DE000D;
+		}
+
+		.message-valid {
+			color: #60BD4E;
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<form action="">
+			<div class="form-line">
+				<label for="username">名称</label>
+				<input type="text" id="username" class="input-tip">
+				<input type="submit" id="submit" value="验证">
+				<p class="message-tip">必填，长度为4~16个字符</p>
+				<p class="message-invalid">姓名不能为空</p>
+				<p class="message-valid">名称格式正确</p>
+			</div>
+
+		</form>
+	</main>
+</body>
+</html>
