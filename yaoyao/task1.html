@@ -11,15 +11,12 @@
 		}
 		
 		form {
-			width: 800px;
+			width: 450px;
 			margin: 100px auto;
-		}
-		
-		form .form-line {
-			text-align: center;
 		}
 
 		label, input {
+			vertical-align: middle;
 			height: 40px;
 			line-height: 40px;
 		}
@@ -57,7 +54,9 @@
 		}
 		
 		p {
+			margin: 5px 75px;
 			font-size: 18px;
+			display: none;
 		}
 
 		.message-tip {
@@ -70,15 +69,15 @@
 
 		.message-valid {
 			color: #60BD4E;
-		}
+		}		
 	</style>
 </head>
 <body>
 	<main>
 		<form action="">
-			<div class="form-line">
+			<div>
 				<label for="username">名称</label>
-				<input type="text" id="username" class="input-tip">
+				<input type="text" id="username">
 				<input type="submit" id="submit" value="验证">
 				<p class="message-tip">必填，长度为4~16个字符</p>
 				<p class="message-invalid">姓名不能为空</p>
@@ -87,5 +86,89 @@
 
 		</form>
 	</main>
+	<script type="text/javascript">
+		(function(){
+			var $ = function(id) {
+				if (typeof id === 'object') {
+					return id;
+				} else {
+					return document.querySelector(id);
+				}
+			}			
+
+			function show(dom) {
+				hide('.message-tip');
+				hide('.message-invalid');
+				hide('.message-valid');
+				$(dom).style.display = 'block';
+			}
+
+			function hide(dom) {
+				$(dom).style.display = 'none';		
+			}
+
+			function showTip() {
+				show('.message-tip');
+				$('#username').className = 'input-tip';
+			}
+
+			function showInvalid() {
+				show('.message-invalid');
+				$('#username').className = 'input-invalid';
+			}
+
+			function showValid() {
+				show('.message-valid');
+				$('#username').className = 'input-valid';
+			}
+
+			// reference[http://ife.baidu.com/note/detail/id/583]
+			function getStrRealLength(str) {
+				var res = 0;
+				var len = str.length;
+				for (var i = 0; i < len; i++) {
+					var codeVal = str.charCodeAt(i);	
+					res += 1;
+					if (codeVal >= 0xD800 && codeVal <= 0xDBFF) {
+						i++;
+					} 				
+				}
+				return res;
+			}
+
+			showTip();
+
+			$('#username').oninput = function(e) {
+				showTip();
+			}
+
+			$('#submit').onclick = function(e){
+				//cancel form submit default event handler
+				e = e || window.event;
+
+				var inputVal = $('#username').value;
+
+				if (inputVal === '') {
+					showInvalid();
+					return false;
+				}
+
+				var len = getStrRealLength(inputVal);
+
+				if ( len < 4 || len >16 ) {
+					showTip();
+					return false;
+				}
+
+				showValid();
+
+				if(e.preventDefault) {
+					e.preventDefault();
+				} else {
+					e.returnValue =false;
+				}
+			}
+		})();
+	</script>
 </body>
 </html>

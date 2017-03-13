@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>任务二：表单（二）多个表单项的动态校验</title>
+	<style>
+		* {
+			padding:0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+		
+		form {
+			width: 450px;
+			margin: 100px auto;
+		}
+
+		form div {
+			margin-top: 20px;
+		}
+
+		label, input,button {
+			vertical-align: middle;
+			height: 40px;
+			line-height: 40px;
+		}
+		
+		label, input[type=text] {
+			font-size: 20px;
+		}
+
+		label {
+			display: inline-block;
+			width: 120px;
+			text-align: right;
+		}
+
+		input[type=text] {
+			border-radius: 5px;
+			margin-left: 25px; 
+			padding: 0 15px;
+			width: 220px;
+		}
+
+		.button {
+			padding-left: 120px;
+		}
+
+		button[type=submit] {
+			margin-left: 173px;
+			width: 80px;
+			color: #fff;
+			background: #2E77B8;
+			font-size: 20px;
+			border: 0;
+			border-radius: 5px;
+		}
+		
+		.input-tip {
+			border: 2px solid #ccc;			
+		}
+
+		.input-invalid {
+			border: 2px solid #DE000D;
+		}
+
+		.input-valid {
+			border: 2px solid #60BD4E;
+		}
+		
+		p {
+			margin-top: 5px;
+			margin-left: 150px;
+			font-size: 18px;
+			display: none;
+		}
+
+		.message-tip {
+			color: #ccc;
+		}
+
+		.message-invalid {
+			color: #DE000D;
+		}
+
+		.message-valid {
+			color: #60BD4E;
+		}		
+	</style>
+</head>
+<body>
+	<main>
+		<form action="">
+			<div>
+				<label for="username">名称</label>
+				<input type="text" id="username" class="input-tip">
+				<p class="message-tip">必填，长度为4~16个字符</p>
+				<p class="message-invalid">姓名不能为空</p>
+				<p class="message-valid">名称格式正确</p>
+			</div>
+			<div>
+				<label>密码</label>
+				<input type="text" name="password" id="password" class="input-tip">
+			</div>
+			<div>
+				<label>密码确认</label>
+				<input type="text" name="password" id="password" class="input-tip">
+			</div>
+			<div>
+				<label>邮箱</label>
+				<input type="text" name="password" id="password" class="input-tip">
+			</div>
+			<div>
+				<label>手机</label>
+				<input type="text" name="password" id="password" class="input-tip">
+			</div>
+			<div class="button">
+				<button type="submit" id="submit">验证</button>			
+			</div>
+		</form>
+	</main>
+	<script type="text/javascript">
+		(function(){
+			var $ = function(id) {
+				if (typeof id === 'object') {
+					return id;
+				} else {
+					return document.querySelector(id);
+				}
+			}
+
+			function show(dom) {
+				hide('.message-tip');
+				hide('.message-invalid');
+				hide('.message-valid');
+				$(dom).style.display = 'block';
+			}
+
+			function hide(dom) {
+				$(dom).style.display = 'none';		
+			}
+
+			// 
+			function getStrRealLength(str) {
+				var res = 0;
+				var len = str.length;
+				for (var i = 0; i < len; i++) {
+					var codeVal = str.charCodeAt(i);	
+					res += 1;
+					if (codeVal >= 0xD800 && codeVal <= 0xDBFF) {
+						i++;
+					} 				
+				}
+				return res;
+			}
+
+			show('.message-tip');
+
+			$('#username').oninput = function(e) {
+				show('.message-tip');
+			}
+
+			$('#submit').onclick = function(e){
+				//cancel form submit default event handler
+				e = e || window.event;
+
+				var inputVal = $('#username').value;
+
+				if (inputVal === '') {
+					show('.message-invalid');
+					return false;
+				}
+
+				var len = getStrRealLength(inputVal);
+
+				if ( len < 4 || len >16 ) {
+					show('.message-tip');
+					return false;
+				}
+
+				show('.message-valid');
+
+				if(e.preventDefault) {
+					e.preventDefault();
+				} else {
+					e.returnValue =false;
+				}
+			}
+		})();
+	</script>
+</body>
+</html>
