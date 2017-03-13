@@ -23,10 +23,8 @@
 			vertical-align: middle;
 			height: 40px;
 			line-height: 40px;
-		}
-		
-		label, input[type=text] {
 			font-size: 20px;
+
 		}
 
 		label {
@@ -35,7 +33,7 @@
 			text-align: right;
 		}
 
-		input[type=text] {
+		input {
 			border-radius: 5px;
 			margin-left: 25px; 
 			padding: 0 15px;
@@ -54,6 +52,7 @@
 			font-size: 20px;
 			border: 0;
 			border-radius: 5px;
+			cursor: pointer;
 		}
 		
 		.input-tip {
@@ -72,7 +71,6 @@
 			margin-top: 5px;
 			margin-left: 150px;
 			font-size: 18px;
-			display: none;
 		}
 
 		.message-tip {
@@ -94,53 +92,44 @@
 			<div>
 				<label for="username">名称</label>
 				<input type="text" id="username" class="input-tip">
-				<p class="message-tip">必填，长度为4~16个字符</p>
-				<p class="message-invalid">姓名不能为空</p>
-				<p class="message-valid">名称格式正确</p>
+				<p id="username-tip" class="message-tip"></p>
 			</div>
 			<div>
-				<label>密码</label>
-				<input type="text" name="password" id="password" class="input-tip">
+				<label for="password">密码</label>
+				<input type="password" name="password" id="password" class="input-tip">
+				<p id="password-tip" class="message-tip"></p>
 			</div>
 			<div>
-				<label>密码确认</label>
-				<input type="text" name="password" id="password" class="input-tip">
+				<label for="passwordcfg">密码确认</label>
+				<input type="password" name="passwordcfg" id="passwordcfg" class="input-tip">
+				<p id="passwordcfg-tip" class="message-tip"></p>
 			</div>
 			<div>
-				<label>邮箱</label>
-				<input type="text" name="password" id="password" class="input-tip">
+				<label for="email">邮箱</label>
+				<input type="text" name="email" id="email" class="input-tip">
+				<p id="email-tip" class="message-tip"></p>
 			</div>
 			<div>
-				<label>手机</label>
-				<input type="text" name="password" id="password" class="input-tip">
+				<label for="tele">手机</label>
+				<input type="text" name="password" id="tele" class="input-tip">
+				<p id="tele-tip" class="message-tip"></p>
 			</div>
 			<div class="button">
-				<button type="submit" id="submit">验证</button>			
+				<button type="submit" id="submit">验证</button>		
 			</div>
 		</form>
 	</main>
 	<script type="text/javascript">
 		(function(){
-			var $ = function(id) {
-				if (typeof id === 'object') {
-					return id;
+			var $ = function(selector) {
+				if (typeof selector === 'object') {
+					return selector;
 				} else {
-					return document.querySelector(id);
+					return document.querySelector(selector);
 				}
 			}
 
-			function show(dom) {
-				hide('.message-tip');
-				hide('.message-invalid');
-				hide('.message-valid');
-				$(dom).style.display = 'block';
-			}
-
-			function hide(dom) {
-				$(dom).style.display = 'none';		
-			}
-
-			// 
+			// reference[http://ife.baidu.com/note/detail/id/583]
 			function getStrRealLength(str) {
 				var res = 0;
 				var len = str.length;
@@ -154,37 +143,180 @@
 				return res;
 			}
 
-			show('.message-tip');
-
-			$('#username').oninput = function(e) {
-				show('.message-tip');
+			function bindCheck() {
+				bindCheckUsername();
+				bindCheckPassword();
+				bindCheckPasswordCfg();
+				bindCheckEmail();
+				bindCheckTele();
 			}
+			
+			function bindCheckUsername() {
+				var input = $('#username'),
+					tip = $('#username-tip');
+
+				input.onfocus = function() {
+					input.className = 'input-tip';
+					tip.className = 'message-tip';
+					tip.textContent = '必填，长度为4~16个字符';
+				}
+
+				input.onblur = function() {
+					if (input.value === '') {
+						input.className = 'input-invalid';
+						tip.className = 'message-invalid';
+						tip.textContent = '名称不能为空';
+						return;
+					}
+
+					var len = getStrRealLength(input.value);
+
+					if (4 <= len && len <= 16) {
+						input.className = 'input-valid';
+						tip.className = 'message-valid';
+						tip.textContent = '名称可用';
+					}
+				}
+			}
+
+
+			function bindCheckPassword() {
+				var input = $('#password'),
+					tip = $('#password-tip');
+
+				input.onfocus = function() {
+					input.className = 'input-tip';
+					tip.className = 'message-tip';
+					tip.textContent = '必填，长度为6~16个字符';
+				}
+
+				input.onblur = function() {
+					if (input.value === '') {
+						input.className = 'input-invalid';
+						tip.className = 'message-invalid';
+						tip.textContent = '密码不能为空';
+						return;
+					}
+
+					var len = getStrRealLength(input.value);
+
+					if (6 <= len && len <= 16) {
+						input.className = 'input-valid';
+						tip.className = 'message-valid';
+						tip.textContent = '密码可用';
+					}
+				}
+			}
+
+			function bindCheckPasswordCfg() {
+				var input = $('#passwordcfg'),
+					tip = $('#passwordcfg-tip');
+
+				input.onfocus = function() {
+					input.className = 'input-tip';
+					tip.className = 'message-tip';
+					tip.textContent = '再次输入相同密码';
+				}
+
+				input.onblur = function() {
+					if (input.value === '' || input.value != $('#password').value) {
+						input.className = 'input-invalid';
+						tip.className = 'message-invalid';
+						tip.textContent = '密码输入不一致';
+						return;
+					}
+
+
+					input.className = 'input-valid';
+					tip.className = 'message-valid';
+					tip.textContent = '密码输入一致';
+				}
+			}
+
+			function bindCheckEmail() {
+				var input = $('#email'),
+					tip = $('#email-tip');
+
+				input.onfocus = function() {
+					input.className = 'input-tip';
+					tip.className = 'message-tip';
+					tip.textContent = '必填';
+				}
+
+				input.onblur = function() {
+					if (input.value === '') {
+						input.className = 'input-invalid';
+						tip.className = 'message-invalid';
+						tip.textContent = '邮箱不能为空';
+						return;
+					}
+
+
+					if (!/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(input.value)) {
+						input.className = 'input-invalid';
+						tip.className = 'message-invalid';
+						tip.textContent = '邮箱格式错误';
+						return;
+					}
+
+
+					input.className = 'input-valid';
+					tip.className = 'message-valid';
+					tip.textContent = '邮箱格式正确';
+				}
+			}
+
+			function bindCheckTele() {
+				var input = $('#tele'),
+					tip = $('#tele-tip');
+
+				input.onfocus = function() {
+					input.className = 'input-tip';
+					tip.className = 'message-tip';
+					tip.textContent = '必填';
+				}
+
+				input.onblur = function() {
+					if (input.value === '') {
+						input.className = 'input-invalid';
+						tip.className = 'message-invalid';
+						tip.textContent = '手机不能为空';
+						return;
+					}
+
+
+					if (!/^1[34578]\d{9}$/.test(input.value)) {
+						input.className = 'input-invalid';
+						tip.className = 'message-invalid';
+						tip.textContent = '手机格式错误';
+						return;
+					}
+
+
+					input.className = 'input-valid';
+					tip.className = 'message-valid';
+					tip.textContent = '手机格式正确';
+				}
+			}
+
+			bindCheck();
 
 			$('#submit').onclick = function(e){
 				//cancel form submit default event handler
 				e = e || window.event;
-
-				var inputVal = $('#username').value;
-
-				if (inputVal === '') {
-					show('.message-invalid');
-					return false;
-				}
-
-				var len = getStrRealLength(inputVal);
-
-				if ( len < 4 || len >16 ) {
-					show('.message-tip');
-					return false;
-				}
-
-				show('.message-valid');
-
 				if(e.preventDefault) {
 					e.preventDefault();
 				} else {
 					e.returnValue =false;
 				}
+				
+				if(document.querySelectorAll('.message-valid').length === 5) {
+					alert('验证通过！');
+					return;
+				}
+				
+				var invalid = document.querySelector('p:not(.message-valid)');
+				alert(invalid.previousElementSibling.previousElementSibling.textContent + '输入有误')
 			}
 		})();
 	</script>

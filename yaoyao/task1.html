@@ -39,6 +39,7 @@
 			font-size: 20px;
 			border: 0;
 			border-radius: 5px;
+			cursor: pointer;
 		}
 		
 		.input-tip {
@@ -145,7 +146,11 @@
 			$('#submit').onclick = function(e){
 				//cancel form submit default event handler
 				e = e || window.event;
-
+				if(e.preventDefault) {
+					e.preventDefault();
+				} else {
+					e.returnValue =false;
+				}
 				var inputVal = $('#username').value;
 
 				if (inputVal === '') {
@@ -162,11 +167,7 @@
 
 				showValid();
 
-				if(e.preventDefault) {
-					e.preventDefault();
-				} else {
-					e.returnValue =false;
-				}
+				
 			}
 		})();
 	</script>
