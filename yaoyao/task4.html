@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<title>任务四：听指令的小方块（一）</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.grid-wrapper {
+			position: absolute;
+			left: 50px;
+			top: 50px;
+			border: 1px solid #333;
+			width: 500px;
+		}
+
+		.grid-row {			
+			display: flex;			
+		}
+
+		.grid-row div {
+			height: 50px;
+			width: 50px;
+			border-bottom: 1px solid #ccc;
+			border-right: 1px solid #ccc;
+		}
+
+		.col-num {
+			font-size: 24px;
+			font-weight: bold;
+			text-align: center;
+			display: flex;
+			margin-left: 50px;
+		}
+		.col-num div {
+			width: 50px;
+			height: 50px;
+			line-height: 50px;
+		}
+
+		.row-num {
+			font-size: 24px;
+			font-weight: bold;
+			text-align: center;
+		}
+		.row-num div {
+			width: 50px;
+			height: 50px;
+			line-height: 50px;			
+		}
+
+		#square {
+			width: 50px;
+			height: 50px;
+			background: red;
+			position: absolute;
+			border-top: 15px solid blue;
+		}	
+
+		.control-wrapper {
+			margin: 20px;
+		}
+
+		.control-wrapper button {
+			width: 100px;
+			height: 25px;
+			margin-left: 10px;
+		}
+
+		.control-wrapper input {
+			width: 200px;
+			height: 25px;
+			margin-left: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="col-num">
+		<div>1</div>
+		<div>2</div>
+		<div>3</div>
+		<div>4</div>
+		<div>5</div>
+		<div>6</div>
+		<div>7</div>
+		<div>8</div>
+		<div>9</div>
+		<div>10</div>
+	</div>
+	<div class="row-num">
+		<div>1</div>
+		<div>2</div>
+		<div>3</div>
+		<div>4</div>
+		<div>5</div>
+		<div>6</div>
+		<div>7</div>
+		<div>8</div>
+		<div>9</div>
+		<div>10</div>
+	</div>
+	<div class="grid-wrapper">		
+	</div>
+	<div class="control-wrapper">
+		<input type="text" name="control-input" id="control-input">
+		<button id="control-button">执行</button>
+	</div>
+<script type="text/javascript">
+	(function(){
+		var $ = function(selector) {
+				if (typeof selector === 'object') {
+					return selector;
+				} else {
+					return document.querySelector(selector);
+				}
+			}
+
+		// 存储方向，y轴，x轴。
+		var direction = 0,
+			squarey = 0,
+			squarex = 0;
+
+		// 在输入框中允许输入如下指令，按下按钮后，使得正方形做相应动作
+		// GO：向蓝色边所面向的方向前进一格（一格等同于正方形的边长）
+		// TUN LEF：向左转（逆时针旋转90度）
+		// TUN RIG：向右转（顺时针旋转90度）
+		// TUN BAC：向右转（旋转180度）
+		// 移动不能超出格子空间
+		$('#control-button').onclick = function(){
+			switch($('#control-input').value) {
+				case 'GO':
+					goforward();
+					break;
+				case 'TUN LEF':
+					directionCalc(-1);					
+					break;
+				case 'TUN RIG':
+					directionCalc(1);					
+					break;
+				case 'TUN BAC':
+					directionCalc(2);					
+					break;
+				default:
+					break;
+			};
+
+			renderSquare();			
+		}
+
+
+		renderGrid();
+		renderSquare();
+
+		// 渲染棋盘
+		function renderGrid() {
+			let gridh = '';
+			// 行
+			for (let i = 0; i < 10; i++) {
+				// 列
+				let gridrowh = '<div class="grid-row">';
+				for (let j = 0; j < 10; j++) {
+					gridrowh += '<div></div>';
+				}
+				gridrowh += '</div>'
+				gridh += gridrowh;
+			}
+
+			gridh += '<div id="square"></div>';
+
+			$('.grid-wrapper').innerHTML = gridh;
+		}
+
+		// 方向
+		// 上：0
+		// 右：1
+		// 下：2
+		// 左：3
+
+		// 向前一步
+		function goforward() {
+			var oldsquarey = squarey,
+				oldsquarex = squarex;
+			if (direction == 0) {
+				squarey -= 1;
+			} else if (direction == 1) {
+				squarex += 1;
+			} else if (direction == 2) {
+				squarey += 1
+			} else if (direction == 3) {
+				squarex -= 1;
+			}
+
+			if (squarey < 0 || squarey > 9 || squarex < 0 || squarex > 9) {
+				squarey = oldsquarey;
+				squarex = oldsquarex;
+			}
+		}
+
+		// 方向计算		
+		function directionCalc(turn) {
+			direction += turn;
+			// mod 4
+			if (direction < 0) {
+				direction += 4;
+			}else if (direction >= 4) {
+				direction -= 4;
+			}
+		}
+
+		// 渲染小方块		
+		function renderSquare() {	
+			var squaredom = $('#square');
+			squaredom.style.transform = 'rotate(' + direction * 90 + 'deg)';
+			squaredom.style.left = (squarex * 50 - 1) + 'px';
+			squaredom.style.top = (squarey * 50 - 1) + 'px';
+		}
+	})();
+</script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -27,7 +28,9 @@
 			border: 1px solid #aaa;
 			background: #fff;
 		}
-
+		input[type=radio] {
+			margin-left: 50px;
+		}
 		#city {
 			width: 220px;
 		}
@@ -38,6 +41,13 @@
 			width: 520px;
 			border-radius: 5px;
 			border: 1px solid #aaa;
+			padding: 0 5px;
+		}
+		#company:focus {
+			border: 0;
+		}
+		.hide {
+			display: none;
 		}
 	</style>
 </head>
@@ -51,17 +61,17 @@
 				<input type="radio" name="student" id="undergraduate">
 				<label for="undergraduate">非在校生</label>
 			</div>
-			<div>
+			<div id="graduate-wrapper">
 				<label for="school">学校</label>
 				<select name="school" id="city">
 					<option value="0">北京</option>
-					<option value="0">上海</option>
-					<option value="0">南京</option>
-					<option value="0">陕西</option>
+					<option value="1">上海</option>
+					<option value="2">南京</option>
+					<option value="3">陕西</option>
 				</select>
 				<select name="school" id="school"></select>
 			</div>
-			<div>
+			<div id="undergraduate-wrapper" class="hide">
 				<label for="company">就业单位</label>
 				<input type="text" id="company">
 			</div>
@@ -77,7 +87,81 @@
 				}
 			}
 
-			
+			var schoolData = {
+				0: [{
+					text: '清华大学',
+					value: 0
+				}, {
+					text: '北京大学',
+					value: 1
+				}, {
+					text: '中国人名大学',
+					value: 2
+				}],
+				1: [{
+					text: '上海交通大学',
+					value: 3
+				}, {
+					text: '复旦大学',
+					value: 4
+				}, {
+					text: '同济大学',
+					value: 5
+				}],
+				2: [{
+					text: '南京大学',
+					value: 6
+				}, {
+					text: '东南大学',
+					value: 7
+				}, {
+					text: '南京师范大学',
+					value: 8
+				}],
+				3: [{
+					text: '西安交通大学',
+					value: 9
+				}, {
+					text: '西安电子科技大学',
+					value: 10
+				}, {
+					text: '西北大学',
+					value: 11
+				}]
+			}
+
+			renderSchoolForCity(0);
+
+			$('#city').onchange = function(e) {
+				var e = e || window.event;
+				var ele = e.srcElement || e.target;
+
+				renderSchoolForCity(ele.value);				
+			}
+
+			$('#graduate').onchange = function(e) {
+				var e = e || window.event;
+				var ele = e.srcElement || e.target;
+				if (ele.checked) {
+					$('#graduate-wrapper').className = '';
+					$('#undergraduate-wrapper').className = 'hide';
+				}
+			}
+
+			$('#undergraduate').onchange = function(e) {
+				var e = e || window.event;
+				var ele = e.srcElement || e.target;
+				if (ele.checked) {
+					$('#graduate-wrapper').className = 'hide';
+					$('#undergraduate-wrapper').className = '';
+				}
+			}
+
+			function renderSchoolForCity(cityid) {
+				$('#school').innerHTML = schoolData[cityid].map(function(item,index) {
+					return '<option value=' + item.value + '">' + item.text + '</option>'
+				}).join('');
+			}
 		})();
 	</script>
 </body>
