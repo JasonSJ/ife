@@ -14,7 +14,6 @@
 			left: 50px;
 			top: 50px;
 			border: 1px solid #333;
-			width: 500px;
 		}
 
 		.grid-row {			
@@ -214,8 +213,8 @@
 		function renderSquare() {	
 			var squaredom = $('#square');
 			squaredom.style.transform = 'rotate(' + direction * 90 + 'deg)';
-			squaredom.style.left = (squarex * 50 - 1) + 'px';
-			squaredom.style.top = (squarey * 50 - 1) + 'px';
+			squaredom.style.left = (squarex * 50 ) + 'px';
+			squaredom.style.top = (squarey * 50 ) + 'px';
 		}
 	})();
 </script>
